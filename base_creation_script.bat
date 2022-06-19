@@ -1,0 +1,2 @@
+"C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe" mysql -uroot -proot <D:\Vadim\J\SenlaProjects\scooterrental\base_creation.sql
+"C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe" mysql -uroot -proot <D:\Vadim\J\SenlaProjects\scooterrental\base_filling.sql
