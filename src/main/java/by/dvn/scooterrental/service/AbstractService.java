@@ -1,5 +1,8 @@
 package by.dvn.scooterrental.service;
 
+import by.dvn.scooterrental.handlerexception.HandleBadRequestBody;
+import by.dvn.scooterrental.handlerexception.HandleBadRequestPath;
+import by.dvn.scooterrental.handlerexception.HandleNotFoundExeption;
 import by.dvn.scooterrental.model.IModelObject;
 import by.dvn.scooterrental.repository.AbstractMySqlRepo;
 import org.apache.logging.log4j.LogManager;
@@ -29,29 +32,45 @@ public abstract class AbstractService<T extends IModelObject> implements IServic
     }
 
     @Override
-    public void create(IModelObject obj) {
+    public boolean create(IModelObject obj) throws HandleBadRequestBody {
         if (obj != null) {
-            mySqlRepo.create(obj);
+            if (mySqlRepo.create(obj)) {
+                return true;
+            } else {
+                throw new HandleBadRequestBody("Not valid body object. Can`t create object.");
+            }
         }
         log4jLogger.error("No object to create.");
+        throw new HandleBadRequestBody("No object to create.");
+//        return false;
     }
 
     @Override
-    public boolean update(IModelObject obj) {
+    public boolean update(IModelObject obj) throws HandleBadRequestBody {
         if (obj != null) {
-            return mySqlRepo.update(obj);
+            if (mySqlRepo.update(obj)) {
+                return true;
+            } else {
+                throw new HandleBadRequestBody("Not valid body object. Can`t update object.");
+            }
         }
         log4jLogger.error("No object to update.");
-        return false;
+        throw new HandleBadRequestBody("No object to create.");
+//        return false;
     }
 
     @Override
-    public boolean delete(Integer id) {
-        if (id != null) {
-            return mySqlRepo.delete(id);
+    public boolean delete(Integer id) throws HandleBadRequestPath, HandleNotFoundExeption {
+        if (id != null && id > 0) {
+            if (mySqlRepo.delete(id)) {
+                return true;
+            } else {
+                throw new HandleNotFoundExeption("Not found object with id: " + id);
+            }
         }
         log4jLogger.error("No object to delete.");
-        return false;
+        throw new HandleBadRequestPath("Not valid request path.");
+//        return false;
     }
 
 }

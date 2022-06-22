@@ -29,12 +29,13 @@ public abstract class AbstractMySqlRepo<T extends IModelObject> implements IRepo
     }
 
     @Override
-    public void create(IModelObject obj) {
+    public boolean create(IModelObject obj) {
         Session session = getSession();
         try {
             session.save(obj);
             log4jLogger.info("Successful create record in BD for class: " +
                     obj.getClass().getName() + " with id: " + obj.getId());
+            return true;
         } catch (HibernateException e) {
             log4jLogger.error("Hibernate error. Can`t create record in BD for class: " +
                     obj.getClass().getName() + ". " + e.getMessage());
@@ -42,6 +43,7 @@ public abstract class AbstractMySqlRepo<T extends IModelObject> implements IRepo
             log4jLogger.error("Can`t create record in BD for class: " +
                     obj.getClass().getName() + ". " + e.getMessage());
         }
+        return false;
     }
 
 //    @Override
