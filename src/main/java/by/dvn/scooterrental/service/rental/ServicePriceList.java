@@ -2,6 +2,8 @@ package by.dvn.scooterrental.service.rental;
 
 import by.dvn.scooterrental.dto.IDtoObject;
 import by.dvn.scooterrental.dto.rental.DtoPriceList;
+import by.dvn.scooterrental.handlerexception.HandleBadRequestPath;
+import by.dvn.scooterrental.handlerexception.HandleNotFoundExeption;
 import by.dvn.scooterrental.model.rental.PriceList;
 import by.dvn.scooterrental.repository.AbstractMySqlRepo;
 import by.dvn.scooterrental.service.AbstractService;
@@ -27,21 +29,23 @@ public class ServicePriceList extends AbstractService<PriceList> {
     }
 
     @Override
-    public IDtoObject read(Integer id) {
-        if (id == null || id < 0) {
+    public IDtoObject read(Integer id) throws HandleBadRequestPath, HandleNotFoundExeption {
+        if (id == null || id <= 0) {
             log4jLogger.error("Not valid price list`s id value.");
-            return null;
+            throw new HandleBadRequestPath("Not valid id path.");
+//            return null;
         }
         PriceList obj = (PriceList) getMySqlRepo().read(id);
         if (obj != null) {
             return getModelMapper().map(obj, DtoPriceList.class);
         }
         log4jLogger.error("Not found price list with id: " + id);
-        return null;
+        throw new HandleNotFoundExeption("Not found price list with id: " + id);
+//        return null;
     }
 
     @Override
-    public List<IDtoObject> readAll() {
+    public List<IDtoObject> readAll() throws HandleNotFoundExeption {
         List<PriceList> objList = getMySqlRepo().readAll();
         if (objList != null && objList.size() > 0) {
             return objList.stream()
@@ -49,7 +53,8 @@ public class ServicePriceList extends AbstractService<PriceList> {
                     .collect(Collectors.toList());
         }
         log4jLogger.error("No any price list was found.");
-        return null;
+        throw new HandleNotFoundExeption("Not found any price list.");
+//        return null;
     }
 
 }

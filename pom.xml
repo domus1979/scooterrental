@@ -15,12 +15,15 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>scooter rental</name>
 	<description>scooter rental service</description>
+	<packaging>jar</packaging>
 
 	<properties>
 		<maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>17</maven.compiler.target>
 		<java.version>17</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<mavenplugin.version>3.3.2</mavenplugin.version>
+		<threetenbp.version>1.6.0</threetenbp.version>
 		<log4j.version>2.17.1</log4j.version>
 		<mapper.version>3.1.0</mapper.version>
 	</properties>
@@ -36,15 +39,22 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+		<!--
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		-->
 		<dependency>
 			<groupId>org.threeten</groupId>
 			<artifactId>threetenbp</artifactId>
-			<version>1.6.0</version>
+			<version>${threetenbp.version}</version>
 		</dependency>
 
 		<!-- Spring security
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
+			<groupId>org.sprigframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 		-->
@@ -99,7 +109,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
-				<version>3.3.2</version>
+				<version>${mavenplugin.version}</version>
 				<configuration>
 					<failOnMissingWebXml>false</failOnMissingWebXml>
 				</configuration>
