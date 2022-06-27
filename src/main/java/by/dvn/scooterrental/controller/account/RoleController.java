@@ -1,8 +1,7 @@
 package by.dvn.scooterrental.controller.account;
 
 import by.dvn.scooterrental.dto.account.DtoRole;
-import by.dvn.scooterrental.handlerexception.HandleBadRequestPath;
-import by.dvn.scooterrental.handlerexception.HandleNotFoundExeption;
+import by.dvn.scooterrental.handlerexception.*;
 import by.dvn.scooterrental.model.account.Role;
 import by.dvn.scooterrental.service.AbstractService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +39,8 @@ public class RoleController {
     }
 
     @PostMapping
-    public ResponseEntity createObj(@RequestBody Role obj) {
+    public ResponseEntity createObj(@RequestBody Role obj)
+            throws HandleBadRequestBody, HandleBadCondition, HandleNotModified {
 
         if (obj == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -52,7 +52,8 @@ public class RoleController {
     }
 
     @PutMapping
-    public ResponseEntity updateObj(@RequestBody Role obj) {
+    public ResponseEntity updateObj(@RequestBody Role obj)
+            throws HandleBadRequestBody, HandleBadCondition, HandleNotModified {
 
         if (obj == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -64,7 +65,8 @@ public class RoleController {
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity deleteObj(@PathVariable(required = true, name = "id") Integer id) {
+    public ResponseEntity deleteObj(@PathVariable(required = true, name = "id") Integer id)
+            throws HandleBadRequestPath, HandleNotFoundExeption {
 
         if (id == null || id < 0) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

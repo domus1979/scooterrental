@@ -28,7 +28,8 @@ CREATE TABLE roles_list(
 CREATE TABLE rental_points(
     id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL,
-    parent_id INT
+    parent_id INT,
+    FOREIGN KEY (parent_id) REFERENCES rental_points(id)
 );
 
 CREATE TABLE scooter_models(
@@ -59,11 +60,20 @@ CREATE TABLE price_types(
 
 CREATE TABLE price_list(
     id INT PRIMARY KEY AUTO_INCREMENT,
-    scooter_model_id INT NOT NULL,
+    scooter_model_id INT,
     price_type_id INT NOT NULL,
     price DECIMAL(15,2) DEFAULT 0.0 NOT NULL,
     FOREIGN KEY (scooter_model_id) REFERENCES scooter_models(id),
     FOREIGN KEY (price_type_id) REFERENCES price_types(id)
+);
+
+CREATE TABLE season_tickets(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    start_date DATE NOT NULL,
+    price_type_id INT NOT NULL,
+    user_id INT NOT NULL,
+    FOREIGN KEY (price_type_id) REFERENCES price_types(id),
+    FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
 CREATE TABLE orders(
@@ -71,12 +81,12 @@ CREATE TABLE orders(
     start_rental_point_id INT NOT NULL,
     scooter_id INT NOT NULL,
     user_id INT NOT NULL,
-    price_list_id INT NOT NULL,
+    price_list_id INT,
     order_status SMALLINT(2) DEFAULT 0 NOT NULL,
     finish_rental_point_id INT NOT NULL,
-    begin_time DATE NOT NULL,
+    begin_time DATETIME NOT NULL,
     actual_duration BIGINT DEFAULT 0 NOT NULL,
-    end_time DATE NOT NULL,
+    end_time DATETIME NOT NULL,
     price DECIMAL(15,2) NOT NULL,
     discount DOUBLE(5,2) DEFAULT 0.0 NOT NULL,
     cost DECIMAL(15,2) NOT NULL,

@@ -33,7 +33,6 @@ public class ServiceScooterModel extends AbstractService<ScooterModel> {
         if (id == null || id <= 0) {
             log4jLogger.error("Not valid scooter model`s id value.");
             throw new HandleBadRequestPath("Not valid id path.");
-//            return null;
         }
         ScooterModel obj = (ScooterModel) getMySqlRepo().read(id);
         if (obj != null) {
@@ -41,7 +40,6 @@ public class ServiceScooterModel extends AbstractService<ScooterModel> {
         }
         log4jLogger.error("Not found scooter model with id: " + id);
         throw new HandleNotFoundExeption("Not found scooter model with id: " + id);
-//        return null;
     }
 
     @Override
@@ -54,7 +52,6 @@ public class ServiceScooterModel extends AbstractService<ScooterModel> {
         }
         log4jLogger.error("No any scooter model was found.");
         throw new HandleNotFoundExeption("Not found any scooter model.");
-//        return null;
     }
 
 }

@@ -7,6 +7,7 @@ import by.dvn.scooterrental.model.rental.OrderStatus;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class DtoOrder implements IDtoObject {
     private Integer id;
@@ -23,11 +24,11 @@ public class DtoOrder implements IDtoObject {
 
     private DtoRentalPoint finishRentalPoint;
 
-    private LocalDate beginTime;
+    private LocalDateTime beginTime;
 
     private BigInteger actualDuration;
 
-    private LocalDate endTime;
+    private LocalDateTime endTime;
 
     private BigDecimal price;
 
@@ -43,9 +44,9 @@ public class DtoOrder implements IDtoObject {
                     DtoScooter scooter,
                     DtoUser user,
                     DtoPriceList priceList,
-                    LocalDate beginTime,
+                    LocalDateTime beginTime,
                     BigInteger actualDuration,
-                    LocalDate endTime,
+                    LocalDateTime endTime,
                     BigDecimal price,
                     Double discount,
                     BigDecimal cost) {
@@ -92,7 +93,7 @@ public class DtoOrder implements IDtoObject {
         return finishRentalPoint;
     }
 
-    public LocalDate getBeginTime() {
+    public LocalDateTime getBeginTime() {
         return beginTime;
     }
 
@@ -100,7 +101,7 @@ public class DtoOrder implements IDtoObject {
         return actualDuration;
     }
 
-    public LocalDate getEndTime() {
+    public LocalDateTime getEndTime() {
         return endTime;
     }
 
@@ -144,7 +145,7 @@ public class DtoOrder implements IDtoObject {
         this.finishRentalPoint = finishRentalPoint;
     }
 
-    public void setBeginTime(LocalDate beginTime) {
+    public void setBeginTime(LocalDateTime beginTime) {
         this.beginTime = beginTime;
     }
 
@@ -152,7 +153,7 @@ public class DtoOrder implements IDtoObject {
         this.actualDuration = actualDuration;
     }
 
-    public void setEndTime(LocalDate endTime) {
+    public void setEndTime(LocalDateTime endTime) {
         this.endTime = endTime;
     }
 

@@ -1,10 +1,11 @@
 package by.dvn.scooterrental.controller.account;
 
+import by.dvn.scooterrental.dto.IDtoObject;
 import by.dvn.scooterrental.dto.account.DtoUser;
-import by.dvn.scooterrental.handlerexception.HandleBadRequestPath;
-import by.dvn.scooterrental.handlerexception.HandleNotFoundExeption;
+import by.dvn.scooterrental.dto.viewreport.ViewOrderInfo;
+import by.dvn.scooterrental.handlerexception.*;
 import by.dvn.scooterrental.model.account.User;
-import by.dvn.scooterrental.service.AbstractService;
+import by.dvn.scooterrental.service.account.ServiceUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +16,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/user")
 public class UserController {
-    private AbstractService<User> objService;
+    private ServiceUser objService;
 
     @Autowired
-    public UserController(AbstractService<User> objService) {
+    public UserController(ServiceUser objService) {
         this.objService = objService;
     }
 
@@ -34,13 +35,23 @@ public class UserController {
     @GetMapping
     public ResponseEntity readAllObj() throws HandleNotFoundExeption {
 
-        List<DtoUser> objList = objService.readAll();
+        List<IDtoObject> objList = objService.readAll();
 
         return ResponseEntity.ok(objList);
     }
 
+    @GetMapping(value = "/info/{id}")
+    public ResponseEntity readUserInfo(@PathVariable(required = true, name = "id") Integer id)
+            throws HandleBadRequestPath, HandleNotFoundExeption {
+
+        List<ViewOrderInfo> obj = objService.getInfoUserRental(id);
+
+        return ResponseEntity.ok(obj);
+    }
+
     @PostMapping
-    public ResponseEntity createObj(@RequestBody User obj) {
+    public ResponseEntity createObj(@RequestBody User obj)
+            throws HandleBadRequestBody, HandleBadCondition, HandleNotModified {
 
         if (obj == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -52,7 +63,8 @@ public class UserController {
     }
 
     @PutMapping
-    public ResponseEntity updateObj(@RequestBody User obj) {
+    public ResponseEntity updateObj(@RequestBody User obj)
+            throws HandleBadRequestBody, HandleBadCondition, HandleNotModified {
 
         if (obj == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -64,7 +76,8 @@ public class UserController {
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity deleteObj(@PathVariable(required = true, name = "id") Integer id) {
+    public ResponseEntity deleteObj(@PathVariable(required = true, name = "id") Integer id)
+            throws HandleBadRequestPath, HandleNotFoundExeption {
 
         if (id == null || id < 0) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

@@ -12,10 +12,10 @@
 
 	<groupId>by.dvn</groupId>
 	<artifactId>scooterrental</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>v1</version>
 	<name>scooter rental</name>
 	<description>scooter rental service</description>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 
 	<properties>
 		<maven.compiler.source>17</maven.compiler.source>
@@ -100,6 +100,7 @@
 	</dependencies>
 
 	<build>
+		<finalName>scooterrental</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

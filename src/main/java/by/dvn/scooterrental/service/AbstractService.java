@@ -1,8 +1,6 @@
 package by.dvn.scooterrental.service;
 
-import by.dvn.scooterrental.handlerexception.HandleBadRequestBody;
-import by.dvn.scooterrental.handlerexception.HandleBadRequestPath;
-import by.dvn.scooterrental.handlerexception.HandleNotFoundExeption;
+import by.dvn.scooterrental.handlerexception.*;
 import by.dvn.scooterrental.model.IModelObject;
 import by.dvn.scooterrental.repository.AbstractMySqlRepo;
 import org.apache.logging.log4j.LogManager;
@@ -32,7 +30,7 @@ public abstract class AbstractService<T extends IModelObject> implements IServic
     }
 
     @Override
-    public boolean create(IModelObject obj) throws HandleBadRequestBody {
+    public boolean create(IModelObject obj) throws HandleBadRequestBody, HandleBadCondition, HandleNotModified {
         if (obj != null) {
             if (mySqlRepo.create(obj)) {
                 return true;
@@ -46,7 +44,7 @@ public abstract class AbstractService<T extends IModelObject> implements IServic
     }
 
     @Override
-    public boolean update(IModelObject obj) throws HandleBadRequestBody {
+    public boolean update(IModelObject obj) throws HandleBadRequestBody, HandleBadCondition, HandleNotModified {
         if (obj != null) {
             if (mySqlRepo.update(obj)) {
                 return true;

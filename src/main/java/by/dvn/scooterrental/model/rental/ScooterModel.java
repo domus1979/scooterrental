@@ -3,6 +3,7 @@ package by.dvn.scooterrental.model.rental;
 import by.dvn.scooterrental.model.IModelObject;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "scooter_models")
@@ -73,6 +74,19 @@ public class ScooterModel implements IModelObject {
 
     public void setMaxWeight(Integer maxWeight) {
         this.maxWeight = maxWeight;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ScooterModel)) return false;
+        ScooterModel that = (ScooterModel) o;
+        return getId().equals(that.getId()) && getName().equals(that.getName()) && Objects.equals(getMaxSpeed(), that.getMaxSpeed()) && Objects.equals(getWorkTime(), that.getWorkTime()) && Objects.equals(getMaxWeight(), that.getMaxWeight());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getName(), getMaxSpeed(), getWorkTime(), getMaxWeight());
     }
 
 }

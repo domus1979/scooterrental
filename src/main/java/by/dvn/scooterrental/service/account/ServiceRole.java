@@ -35,7 +35,6 @@ public class ServiceRole extends AbstractService<Role> {
         if (id == null || id <= 0) {
             log4jLogger.error("Not valid role`s id value.");
             throw new HandleBadRequestPath("Not valid id path.");
-//            return null;
         }
         Role obj = (Role) getMySqlRepo().read(id);
         if (obj != null) {
@@ -43,7 +42,6 @@ public class ServiceRole extends AbstractService<Role> {
         }
         log4jLogger.error("Not found role with id: " + id);
         throw new HandleNotFoundExeption("Not found role with id: " + id);
-//        return null;
     }
 
     @Override
@@ -56,7 +54,6 @@ public class ServiceRole extends AbstractService<Role> {
         }
         log4jLogger.error("No any role was found.");
         throw new HandleNotFoundExeption("No any role was found.");
-//        return null;
     }
 
 }

@@ -33,7 +33,6 @@ public class ServicePriceType extends AbstractService<PriceType> {
         if (id == null || id <= 0) {
             log4jLogger.error("Not valid price type`s id value.");
             throw new HandleBadRequestPath("Not valid id path.");
-//            return null;
         }
         PriceType obj = (PriceType) getMySqlRepo().read(id);
         if (obj != null) {
@@ -41,7 +40,6 @@ public class ServicePriceType extends AbstractService<PriceType> {
         }
         log4jLogger.error("Not found price type with id: " + id);
         throw new HandleNotFoundExeption("Not found price type with id: " + id);
-//        return null;
     }
 
     @Override
@@ -54,7 +52,6 @@ public class ServicePriceType extends AbstractService<PriceType> {
         }
         log4jLogger.error("No any price type was found.");
         throw new HandleNotFoundExeption("Not found any price type.");
-//        return null;
     }
 
 }

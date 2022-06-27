@@ -7,15 +7,15 @@ public class DtoRentalPoint implements IDtoObject {
 
     private String name;
 
-    private Integer parentRentalPointId;
+    private DtoRentalPoint parent;
 
     public DtoRentalPoint() {
     }
 
-    public DtoRentalPoint(Integer id, String name, Integer parentRentalPointId) {
+    public DtoRentalPoint(Integer id, String name, DtoRentalPoint parent) {
         this.id = id;
         this.name = name;
-        this.parentRentalPointId = parentRentalPointId;
+        this.parent = parent;
     }
 
     public Integer getId() {
@@ -26,8 +26,8 @@ public class DtoRentalPoint implements IDtoObject {
         return name;
     }
 
-    public Integer getParentRentalPointId() {
-        return parentRentalPointId;
+    public DtoRentalPoint getParent() {
+        return parent;
     }
 
     public void setId(Integer id) {
@@ -38,8 +38,8 @@ public class DtoRentalPoint implements IDtoObject {
         this.name = name;
     }
 
-    public void setParentRentalPointId(Integer parentRentalPointId) {
-        this.parentRentalPointId = parentRentalPointId;
+    public void setParent(DtoRentalPoint parent) {
+        this.parent = parent;
     }
 
 }
