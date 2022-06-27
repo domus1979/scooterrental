@@ -2,6 +2,8 @@ package by.dvn.scooterrental.repository.account;
 
 import by.dvn.scooterrental.model.IModelObject;
 import by.dvn.scooterrental.model.account.User;
+import by.dvn.scooterrental.model.rental.Order;
+import by.dvn.scooterrental.model.rental.Scooter;
 import by.dvn.scooterrental.repository.AbstractMySqlRepo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -56,5 +58,25 @@ public class MySqlRepoUser extends AbstractMySqlRepo<User> {
         }
         return null;
     }
+
+    public List getAllUsersAtOrder(User user) {
+        Session session = getSession();
+
+        try {
+            Query query = session.createQuery("FROM Order WHERE user = :userParam");
+            query.setParameter("userParam", user);
+            List<Order> objectList = query.list();
+            if (objectList.size() > 0) {
+                log4jLogger.info("Success read all records in BD for Order with user id: " +
+                        user.getId());
+                return objectList;
+            }
+        } catch (Exception e) {
+            log4jLogger.error("Can`t read records in BD for Order with user id: " +
+                    user.getId() + ". " + e.getMessage());
+        }
+        return null;
+    }
+
 
 }

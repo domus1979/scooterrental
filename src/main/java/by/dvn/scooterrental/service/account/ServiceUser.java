@@ -2,16 +2,20 @@ package by.dvn.scooterrental.service.account;
 
 import by.dvn.scooterrental.dto.IDtoObject;
 import by.dvn.scooterrental.dto.account.DtoUser;
+import by.dvn.scooterrental.dto.viewreport.ViewOrderInfo;
 import by.dvn.scooterrental.handlerexception.HandleBadRequestPath;
 import by.dvn.scooterrental.handlerexception.HandleNotFoundExeption;
 import by.dvn.scooterrental.model.account.User;
+import by.dvn.scooterrental.model.rental.Order;
 import by.dvn.scooterrental.repository.AbstractMySqlRepo;
+import by.dvn.scooterrental.repository.account.MySqlRepoUser;
 import by.dvn.scooterrental.service.AbstractService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,8 +28,8 @@ public class ServiceUser extends AbstractService<User> {
     }
 
     @Override
-    public AbstractMySqlRepo<User> getMySqlRepo() {
-        return super.getMySqlRepo();
+    public MySqlRepoUser getMySqlRepo() {
+        return (MySqlRepoUser) super.getMySqlRepo();
     }
 
     @Override
@@ -33,7 +37,6 @@ public class ServiceUser extends AbstractService<User> {
         if (id == null || id <= 0) {
             log4jLogger.error("Not valid user`s id value.");
             throw new HandleBadRequestPath("Not valid id path.");
-//            return null;
         }
         User obj = (User) getMySqlRepo().read(id);
         if (obj != null) {
@@ -41,7 +44,6 @@ public class ServiceUser extends AbstractService<User> {
         }
         log4jLogger.error("Not found user with id: " + id);
         throw new HandleNotFoundExeption("Not found user with id: " + id);
-//        return null;
     }
 
     @Override
@@ -54,7 +56,37 @@ public class ServiceUser extends AbstractService<User> {
         }
         log4jLogger.error("No any user was found.");
         throw new HandleNotFoundExeption("Not found any user.");
-//        return null;
+    }
+
+    public List<ViewOrderInfo> getInfoUserRental(Integer id) throws HandleBadRequestPath, HandleNotFoundExeption {
+        if (id == null || id <= 0) {
+            log4jLogger.error("Not valid user`s id value.");
+            throw new HandleBadRequestPath("Not valid id path.");
+        }
+
+        User user = (User) getMySqlRepo().read(id);
+        if (user == null) {
+            log4jLogger.error("Not found user with id: " + id);
+            throw new HandleNotFoundExeption("Not found user with id: " + id);
+        }
+
+        List<ViewOrderInfo> viewOrderList = new ArrayList<>();
+
+        List<Order> orderList = getMySqlRepo().getAllUsersAtOrder(user);
+        if (orderList != null && orderList.size() > 0) {
+            for (Order order : orderList) {
+                viewOrderList.add(new ViewOrderInfo(order.getId(),
+                        order.getScooter().getScooterModel().getName() + " " + order.getScooter().getName(),
+                        order.getUser().getFirstName() + " " + order.getUser().getLastName(),
+                        order.getStartRentalPoint().getFullName("", order.getStartRentalPoint()),
+                        order.getBeginTime(),
+                        order.getActualDuration(),
+                        order.getEndTime(),
+                        order.getFinishRentalPoint().getFullName("", order.getFinishRentalPoint()),
+                        order.getCost()));
+            }
+        }
+        return viewOrderList;
     }
 
 }

@@ -2,16 +2,20 @@ package by.dvn.scooterrental.service.rental;
 
 import by.dvn.scooterrental.dto.IDtoObject;
 import by.dvn.scooterrental.dto.rental.DtoScooter;
+import by.dvn.scooterrental.dto.viewreport.ViewOrderInfo;
 import by.dvn.scooterrental.handlerexception.HandleBadRequestPath;
 import by.dvn.scooterrental.handlerexception.HandleNotFoundExeption;
+import by.dvn.scooterrental.model.rental.Order;
 import by.dvn.scooterrental.model.rental.Scooter;
 import by.dvn.scooterrental.repository.AbstractMySqlRepo;
+import by.dvn.scooterrental.repository.rental.MySqlRepoScooter;
 import by.dvn.scooterrental.service.AbstractService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,8 +28,8 @@ public class ServiceScooter extends AbstractService<Scooter> {
     }
 
     @Override
-    public AbstractMySqlRepo<Scooter> getMySqlRepo() {
-        return super.getMySqlRepo();
+    public MySqlRepoScooter getMySqlRepo() {
+        return (MySqlRepoScooter) super.getMySqlRepo();
     }
 
     @Override
@@ -33,7 +37,6 @@ public class ServiceScooter extends AbstractService<Scooter> {
         if (id == null || id <= 0) {
             log4jLogger.error("Not valid scooter`s id value.");
             throw new HandleBadRequestPath("Not valid id path.");
-//            return null;
         }
         Scooter obj = (Scooter) getMySqlRepo().read(id);
         if (obj != null) {
@@ -41,7 +44,6 @@ public class ServiceScooter extends AbstractService<Scooter> {
         }
         log4jLogger.error("Not found scooter with id: " + id);
         throw new HandleNotFoundExeption("Not found scooter with id: " + id);
-//        return null;
     }
 
     @Override
@@ -54,7 +56,37 @@ public class ServiceScooter extends AbstractService<Scooter> {
         }
         log4jLogger.error("No any scooter was found.");
         throw new HandleNotFoundExeption("Not found any scooter.");
-//        return null;
+    }
+
+    public List<ViewOrderInfo> getInfoScooterRental(Integer id) throws HandleBadRequestPath, HandleNotFoundExeption {
+        if (id == null || id <= 0) {
+            log4jLogger.error("Not valid scooter`s id value.");
+            throw new HandleBadRequestPath("Not valid id path.");
+        }
+
+        Scooter scooter = (Scooter) getMySqlRepo().read(id);
+        if (scooter == null) {
+            log4jLogger.error("Not found scooter with id: " + id);
+            throw new HandleNotFoundExeption("Not found scooter with id: " + id);
+        }
+
+        List<ViewOrderInfo> viewOrderList = new ArrayList<>();
+
+        List<Order> orderList = getMySqlRepo().getAllScootersAtOrder(scooter);
+        if (orderList != null && orderList.size() > 0) {
+            for (Order order : orderList) {
+                viewOrderList.add(new ViewOrderInfo(order.getId(),
+                        scooter.getScooterModel().getName() + " " + scooter.getName(),
+                        order.getUser().getFirstName() + " " + order.getUser().getLastName(),
+                        order.getStartRentalPoint().getFullName("", order.getStartRentalPoint()),
+                        order.getBeginTime(),
+                        order.getActualDuration(),
+                        order.getEndTime(),
+                        order.getFinishRentalPoint().getFullName("", order.getFinishRentalPoint()),
+                        order.getCost()));
+            }
+        }
+        return viewOrderList;
     }
 
 }

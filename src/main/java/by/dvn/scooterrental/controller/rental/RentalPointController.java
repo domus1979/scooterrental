@@ -1,10 +1,11 @@
 package by.dvn.scooterrental.controller.rental;
 
+import by.dvn.scooterrental.dto.IDtoObject;
 import by.dvn.scooterrental.dto.rental.DtoRentalPoint;
-import by.dvn.scooterrental.handlerexception.HandleBadRequestPath;
-import by.dvn.scooterrental.handlerexception.HandleNotFoundExeption;
+import by.dvn.scooterrental.dto.viewreport.ViewRentalPointInfo;
+import by.dvn.scooterrental.handlerexception.*;
 import by.dvn.scooterrental.model.rental.RentalPoint;
-import by.dvn.scooterrental.service.AbstractService;
+import by.dvn.scooterrental.service.rental.ServiceRentalPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +16,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/rental-point")
 public class RentalPointController {
-    private AbstractService<RentalPoint> objService;
+    private ServiceRentalPoint objService;
 
     @Autowired
-    public RentalPointController(AbstractService<RentalPoint> objService) {
+    public RentalPointController(ServiceRentalPoint objService) {
         this.objService = objService;
     }
 
@@ -34,13 +35,23 @@ public class RentalPointController {
     @GetMapping
     public ResponseEntity readAllObj() throws HandleNotFoundExeption {
 
-        List<DtoRentalPoint> objList = objService.readAll();
+        List<IDtoObject> objList = objService.readAll();
 
         return ResponseEntity.ok(objList);
     }
 
+    @GetMapping(value = "/info/{id}")
+    public ResponseEntity readRentalpointInfo(@PathVariable(required = true, name = "id") Integer id)
+            throws HandleBadRequestPath, HandleNotFoundExeption {
+
+        ViewRentalPointInfo obj = objService.getInfo(id);
+
+        return ResponseEntity.ok(obj);
+    }
+
     @PostMapping
-    public ResponseEntity createObj(@RequestBody RentalPoint obj) {
+    public ResponseEntity createObj(@RequestBody RentalPoint obj)
+            throws HandleBadRequestBody, HandleBadCondition, HandleNotModified {
 
         if (obj == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -52,7 +63,8 @@ public class RentalPointController {
     }
 
     @PutMapping
-    public ResponseEntity updateObj(@RequestBody RentalPoint obj) {
+    public ResponseEntity updateObj(@RequestBody RentalPoint obj)
+            throws HandleBadRequestBody, HandleBadCondition, HandleNotModified {
 
         if (obj == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -64,7 +76,8 @@ public class RentalPointController {
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity deleteObj(@PathVariable(required = true, name = "id") Integer id) {
+    public ResponseEntity deleteObj(@PathVariable(required = true, name = "id") Integer id)
+            throws HandleBadRequestPath, HandleNotFoundExeption {
 
         if (id == null || id < 0) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

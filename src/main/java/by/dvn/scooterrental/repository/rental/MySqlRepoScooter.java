@@ -1,6 +1,7 @@
 package by.dvn.scooterrental.repository.rental;
 
 import by.dvn.scooterrental.model.IModelObject;
+import by.dvn.scooterrental.model.rental.Order;
 import by.dvn.scooterrental.model.rental.Scooter;
 import by.dvn.scooterrental.repository.AbstractMySqlRepo;
 import org.apache.logging.log4j.LogManager;
@@ -46,13 +47,31 @@ public class MySqlRepoScooter extends AbstractMySqlRepo<Scooter> {
         try {
             Query query = session.createQuery("FROM Scooter");
             List<Scooter> objectList = query.list();
-//            String s = objectList.toString();
             if (objectList.size() > 0) {
                 log4jLogger.info("Success read all records in BD for Scooter.");
                 return objectList;
             }
         } catch (Exception e) {
             log4jLogger.error("Can`t read any records in BD for Scooter. " + e.getMessage());
+        }
+        return null;
+    }
+
+    public List getAllScootersAtOrder(Scooter scooter) {
+        Session session = getSession();
+
+        try {
+            Query query = session.createQuery("FROM Order WHERE scooter = :scooterParam");
+            query.setParameter("scooterParam", scooter);
+            List<Order> objectList = query.list();
+            if (objectList.size() > 0) {
+                log4jLogger.info("Success read all records in BD for Order with scooter id: " +
+                        scooter.getId());
+                return objectList;
+            }
+        } catch (Exception e) {
+            log4jLogger.error("Can`t read records in BD for Order with scooter id: " +
+                    scooter.getId() + ". " + e.getMessage());
         }
         return null;
     }

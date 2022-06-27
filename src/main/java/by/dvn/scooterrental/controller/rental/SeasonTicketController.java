@@ -1,11 +1,9 @@
 package by.dvn.scooterrental.controller.rental;
 
-import by.dvn.scooterrental.dto.IDtoObject;
-import by.dvn.scooterrental.dto.rental.DtoScooter;
-import by.dvn.scooterrental.dto.viewreport.ViewOrderInfo;
+import by.dvn.scooterrental.dto.rental.DtoSeasonTicket;
 import by.dvn.scooterrental.handlerexception.*;
-import by.dvn.scooterrental.model.rental.Scooter;
-import by.dvn.scooterrental.service.rental.ServiceScooter;
+import by.dvn.scooterrental.model.rental.SeasonTicket;
+import by.dvn.scooterrental.service.AbstractService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,44 +11,33 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/scooter")
-public class ScooterController {
-    private ServiceScooter objService;
+@RestController("/season-ticket")
+public class SeasonTicketController {
+    private AbstractService<SeasonTicket> objService;
 
     @Autowired
-    public ScooterController(ServiceScooter objService) {
+    public SeasonTicketController(AbstractService<SeasonTicket> objService) {
         this.objService = objService;
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity readObj(@PathVariable(required = true, name = "id") Integer id)
+    public ResponseEntity read(@PathVariable(required = true, name = "id") Integer id)
             throws HandleBadRequestPath, HandleNotFoundExeption {
 
-        DtoScooter obj = (DtoScooter) objService.read(id);
+        DtoSeasonTicket obj = (DtoSeasonTicket) objService.read(id);
 
         return ResponseEntity.ok(obj);
     }
-
     @GetMapping
     public ResponseEntity readAllObj() throws HandleNotFoundExeption {
 
-        List<IDtoObject> objList = objService.readAll();
+        List<DtoSeasonTicket> objList = objService.readAll();
 
         return ResponseEntity.ok(objList);
     }
 
-    @GetMapping(value = "/info/{id}")
-    public ResponseEntity readScooterInfo(@PathVariable(required = true, name = "id") Integer id)
-            throws HandleBadRequestPath, HandleNotFoundExeption {
-
-        List<ViewOrderInfo> obj = objService.getInfoScooterRental(id);
-
-        return ResponseEntity.ok(obj);
-    }
-
     @PostMapping
-    public ResponseEntity createObj(@RequestBody Scooter obj)
+    public ResponseEntity createObj(@RequestBody SeasonTicket obj)
             throws HandleBadRequestBody, HandleBadCondition, HandleNotModified {
 
         if (obj == null) {
@@ -63,7 +50,7 @@ public class ScooterController {
     }
 
     @PutMapping
-    public ResponseEntity updateObj(@RequestBody Scooter obj)
+    public ResponseEntity updateObj(@RequestBody SeasonTicket obj)
             throws HandleBadRequestBody, HandleBadCondition, HandleNotModified {
 
         if (obj == null) {

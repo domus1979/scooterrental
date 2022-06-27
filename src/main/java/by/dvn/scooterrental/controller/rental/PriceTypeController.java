@@ -1,8 +1,7 @@
 package by.dvn.scooterrental.controller.rental;
 
 import by.dvn.scooterrental.dto.rental.DtoPriceType;
-import by.dvn.scooterrental.handlerexception.HandleBadRequestPath;
-import by.dvn.scooterrental.handlerexception.HandleNotFoundExeption;
+import by.dvn.scooterrental.handlerexception.*;
 import by.dvn.scooterrental.model.rental.PriceType;
 import by.dvn.scooterrental.service.AbstractService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +39,8 @@ public class PriceTypeController {
     }
 
     @PostMapping
-    public ResponseEntity createObj(@RequestBody PriceType obj) {
+    public ResponseEntity createObj(@RequestBody PriceType obj)
+            throws HandleBadRequestBody, HandleBadCondition, HandleNotModified {
 
         if (obj == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -52,7 +52,8 @@ public class PriceTypeController {
     }
 
     @PutMapping
-    public ResponseEntity updateObj(@RequestBody PriceType obj) {
+    public ResponseEntity updateObj(@RequestBody PriceType obj)
+            throws HandleBadRequestBody, HandleBadCondition, HandleNotModified {
 
         if (obj == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -64,7 +65,8 @@ public class PriceTypeController {
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity deleteObj(@PathVariable(required = true, name = "id") Integer id) {
+    public ResponseEntity deleteObj(@PathVariable(required = true, name = "id") Integer id)
+            throws HandleBadRequestPath, HandleNotFoundExeption {
 
         if (id == null || id < 0) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

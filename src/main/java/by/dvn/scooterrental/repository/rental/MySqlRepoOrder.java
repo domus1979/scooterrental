@@ -2,6 +2,7 @@ package by.dvn.scooterrental.repository.rental;
 
 import by.dvn.scooterrental.model.IModelObject;
 import by.dvn.scooterrental.model.rental.Order;
+import by.dvn.scooterrental.model.rental.SeasonTicket;
 import by.dvn.scooterrental.repository.AbstractMySqlRepo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -46,13 +47,33 @@ public class MySqlRepoOrder extends AbstractMySqlRepo<Order> {
         try {
             Query query = session.createQuery("FROM Order");
             List<Order> objectList = query.list();
-//            String s = objectList.toString();
             if (objectList.size() > 0) {
                 log4jLogger.info("Success read all records in BD for Order.");
                 return objectList;
             }
         } catch (Exception e) {
             log4jLogger.error("Can`t read any records in BD for Order. " + e.getMessage());
+        }
+        return null;
+    }
+
+    public SeasonTicket findSeasonTicket(Order order) {
+        Session session = getSession();
+
+        try {
+            String reqText = "FROM SeasonTicket st WHERE user = :userParam,  priceType = :priceTypeParam " +
+                    "ORDER BY st.startDate DESC";
+            Query query = session.createQuery(reqText);
+            query.setParameter("userParam", order.getUser());
+            query.setParameter("priceTypeParam", order.getPriceList().getPriceType());
+            List<SeasonTicket> objList = query.list();
+
+            if (objList.size() > 0) {
+                log4jLogger.info("Success found SeasonTicket/.");
+                return objList.get(0);
+            }
+        } catch (Exception e) {
+            log4jLogger.error("Can`t found any SeasonTicket. " + e.getMessage());
         }
         return null;
     }

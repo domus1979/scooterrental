@@ -6,7 +6,7 @@ import by.dvn.scooterrental.model.account.User;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "orders")
@@ -20,7 +20,7 @@ public class Order implements IModelObject {
     @JoinColumn(name = "start_rental_point_id")
     private RentalPoint startRentalPoint;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "scooter_id")
     private Scooter scooter;
 
@@ -40,13 +40,13 @@ public class Order implements IModelObject {
     private RentalPoint finishRentalPoint;
 
     @Column(name = "begin_time")
-    private LocalDate beginTime;
+    private LocalDateTime beginTime;
 
     @Column(name = "actual_duration")
     private BigInteger actualDuration;
 
     @Column(name = "end_time")
-    private LocalDate endTime;
+    private LocalDateTime endTime;
 
     @Column(name = "price")
     private BigDecimal price;
@@ -57,6 +57,7 @@ public class Order implements IModelObject {
     @Column(name = "cost")
     private BigDecimal cost;
 
+
     public Order() {
     }
 
@@ -65,9 +66,9 @@ public class Order implements IModelObject {
                  Scooter scooter,
                  User user,
                  PriceList priceList,
-                 LocalDate beginTime,
+                 LocalDateTime beginTime,
                  BigInteger actualDuration,
-                 LocalDate endTime,
+                 LocalDateTime endTime,
                  BigDecimal price,
                  Double discount,
                  BigDecimal cost) {
@@ -114,7 +115,7 @@ public class Order implements IModelObject {
         return finishRentalPoint;
     }
 
-    public LocalDate getBeginTime() {
+    public LocalDateTime getBeginTime() {
         return beginTime;
     }
 
@@ -122,7 +123,7 @@ public class Order implements IModelObject {
         return actualDuration;
     }
 
-    public LocalDate getEndTime() {
+    public LocalDateTime getEndTime() {
         return endTime;
     }
 
@@ -166,7 +167,7 @@ public class Order implements IModelObject {
         this.finishRentalPoint = finishRentalPoint;
     }
 
-    public void setBeginTime(LocalDate beginTime) {
+    public void setBeginTime(LocalDateTime beginTime) {
         this.beginTime = beginTime;
     }
 
@@ -174,7 +175,7 @@ public class Order implements IModelObject {
         this.actualDuration = actualDuration;
     }
 
-    public void setEndTime(LocalDate endTime) {
+    public void setEndTime(LocalDateTime endTime) {
         this.endTime = endTime;
     }
 
