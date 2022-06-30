@@ -4,8 +4,10 @@ import by.dvn.scooterrental.dto.IDtoObject;
 import by.dvn.scooterrental.dto.rental.DtoRentalPoint;
 import by.dvn.scooterrental.dto.viewreport.ViewRentalPointInfo;
 import by.dvn.scooterrental.dto.viewreport.ViewScooterInfo;
+import by.dvn.scooterrental.handlerexception.HandleBadCondition;
 import by.dvn.scooterrental.handlerexception.HandleBadRequestPath;
 import by.dvn.scooterrental.handlerexception.HandleNotFoundExeption;
+import by.dvn.scooterrental.model.IModelObject;
 import by.dvn.scooterrental.model.rental.RentalPoint;
 import by.dvn.scooterrental.model.rental.Scooter;
 import by.dvn.scooterrental.repository.AbstractMySqlRepo;
@@ -90,5 +92,20 @@ public class ServiceRentalPoint extends AbstractService<RentalPoint> {
         return new ViewRentalPointInfo(fullName, viewScooterList);
     }
 
+    public boolean checkObject(IModelObject obj, boolean findById) throws HandleBadCondition {
+        if (obj == null) {
+            log4jLogger.error("Rental point is null.");
+            throw new HandleBadCondition("Rental point is null.");
+        }
+        if (!(obj instanceof RentalPoint)) {
+            log4jLogger.error("This is not RentalPoint object.");
+            throw new HandleBadCondition("You wont to use rental point from another object.");
+        }
+        if (findById && getMySqlRepo().read(obj.getId()) == null) {
+            log4jLogger.error("Rental point with id: " + obj.getId() + " not found.");
+            throw new HandleBadCondition("Rental point with id: " + obj.getId() + " not found.");
+        }
+        return true;
+    }
 
 }

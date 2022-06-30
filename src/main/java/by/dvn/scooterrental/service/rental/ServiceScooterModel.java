@@ -2,8 +2,10 @@ package by.dvn.scooterrental.service.rental;
 
 import by.dvn.scooterrental.dto.IDtoObject;
 import by.dvn.scooterrental.dto.rental.DtoScooterModel;
+import by.dvn.scooterrental.handlerexception.HandleBadCondition;
 import by.dvn.scooterrental.handlerexception.HandleBadRequestPath;
 import by.dvn.scooterrental.handlerexception.HandleNotFoundExeption;
+import by.dvn.scooterrental.model.IModelObject;
 import by.dvn.scooterrental.model.rental.ScooterModel;
 import by.dvn.scooterrental.repository.AbstractMySqlRepo;
 import by.dvn.scooterrental.service.AbstractService;
@@ -52,6 +54,22 @@ public class ServiceScooterModel extends AbstractService<ScooterModel> {
         }
         log4jLogger.error("No any scooter model was found.");
         throw new HandleNotFoundExeption("Not found any scooter model.");
+    }
+
+    public boolean checkObject(IModelObject obj, boolean findById) throws HandleBadCondition {
+        if (obj == null) {
+            log4jLogger.error("Scooter model is null.");
+            throw new HandleBadCondition("Scooter model is null.");
+        }
+        if (!(obj instanceof ScooterModel)) {
+            log4jLogger.error("This is not ScooterModel object.");
+            throw new HandleBadCondition("You wont to use scooter model from another object.");
+        }
+        if (findById && getMySqlRepo().read(obj.getId()) == null) {
+            log4jLogger.error("Scooter model with id: " + obj.getId() + " not found.");
+            throw new HandleBadCondition("Scooter model with id: " + obj.getId() + " not found.");
+        }
+        return true;
     }
 
 }

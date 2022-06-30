@@ -29,6 +29,7 @@ public class MySqlRepoPriceType extends AbstractMySqlRepo<PriceType> {
             Query query = session.createQuery("FROM PriceType WHERE id = :idParam");
             query.setParameter("idParam", id);
             List<PriceType> objectList = query.list();
+            session.clear();
             if (objectList.size() > 0) {
                 log4jLogger.info("Success read records in BD for PriceType with id: " + id + ".");
                 return objectList.get(0);

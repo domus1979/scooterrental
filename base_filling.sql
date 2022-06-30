@@ -2,11 +2,11 @@ USE scooter;
 
 INSERT users(id, login, password, first_name, last_name, email, age)
 VALUES
-    (1, 'admin',   '$10$Etq1OkpmBRecv2RRLOYxrexl9KLIL7NRFOp/aIleRB5sXvJoWjIb.',    'Kolas',   'Yakub',   'kolas@tut.by',   75), /* admin */
-    (2, 'Kandrat', '$2a$10$s1BqGogeNDeIIpTbG32uEO0mDbHYrG/ABNVywreiCCehY4XMsLQY.', 'Krapiva', 'Kandrat', 'krapiva@tut.by', 64), /* guest */
-    (3, 'Maksim',  '$2a$10$s1BqGogeNDeIIpTbG32uEO0mDbHYrG/ABNVywreiCCehY4XMsLQY.', 'Tank',    'Maksim',  'tank@tut.by',    81), /* guest */
-    (4, 'Yanka',   '$2a$10$s1BqGogeNDeIIpTbG32uEO0mDbHYrG/ABNVywreiCCehY4XMsLQY.', 'Kupala',  'Yanka',   'kupala@tut.by',  58), /* guest */
-    (5, 'Mavr',    '$2a$10$s1BqGogeNDeIIpTbG32uEO0mDbHYrG/ABNVywreiCCehY4XMsLQY.', 'Mavr',    'Yanka',   'mavr@tut.by',    62); /* guest */
+    (1, 'admin',   '$2a$12$KxUrnotEfXmtJzJ5UDLu3edo88jjgiacgNKQ.VEl//Nq9ZBgfXWT6', 'Kolas',   'Yakub',   'kolas@tut.by',   75), /* admin */
+    (2, 'Kandrat', '$2a$12$PgzMqybJsm/8sVitccTYaeM9.nbDlvuPUFYJlGCFSfEjUWaTh0oPW', 'Krapiva', 'Kandrat', 'krapiva@tut.by', 64), /* Kandrat */
+    (3, 'Maksim',  '$2a$12$IOuv.4sC7og5bx3XXTbxgessvK8cF8.NAnokHp6CwarpzUkqifZDC', 'Tank',    'Maksim',  'tank@tut.by',    81), /* Maksim */
+    (4, 'Yanka',   '$2a$12$vUzIOXemRhGBFBxl1s0nl.a3hV81BmMwZd7W5e15IEiuuPPgwi8Xa', 'Kupala',  'Yanka',   'kupala@tut.by',  58), /* Kupala */
+    (5, 'Mavr',    '$2a$12$5AZ4nSt0doGfxrIiZ1vUuemkE4I9OIWy4E65MYtBDzYqSdGPnh6nm', 'Mavr',    'Yanka',   'mavr@tut.by',    62); /* Yanka */
 
 INSERT roles(id, name)
 VALUES

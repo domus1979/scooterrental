@@ -40,7 +40,7 @@ public class ScooterModelController {
 
     @PostMapping
     public ResponseEntity createObj(@RequestBody ScooterModel obj)
-            throws HandleBadRequestBody, HandleBadCondition, HandleNotModified {
+            throws HandleBadCondition, HandleNotModified, HandleBadRequestPath, HandleNotFoundExeption {
 
         if (obj == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -53,7 +53,7 @@ public class ScooterModelController {
 
     @PutMapping
     public ResponseEntity updateObj(@RequestBody ScooterModel obj)
-            throws HandleBadRequestBody, HandleBadCondition, HandleNotModified {
+            throws HandleBadCondition, HandleNotModified {
 
         if (obj == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

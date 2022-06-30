@@ -40,7 +40,7 @@ public class PriceTypeController {
 
     @PostMapping
     public ResponseEntity createObj(@RequestBody PriceType obj)
-            throws HandleBadRequestBody, HandleBadCondition, HandleNotModified {
+            throws HandleBadCondition, HandleNotModified, HandleBadRequestPath, HandleNotFoundExeption {
 
         if (obj == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -53,7 +53,7 @@ public class PriceTypeController {
 
     @PutMapping
     public ResponseEntity updateObj(@RequestBody PriceType obj)
-            throws HandleBadRequestBody, HandleBadCondition, HandleNotModified {
+            throws HandleBadCondition, HandleNotModified {
 
         if (obj == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

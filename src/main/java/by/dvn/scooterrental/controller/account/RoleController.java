@@ -40,7 +40,7 @@ public class RoleController {
 
     @PostMapping
     public ResponseEntity createObj(@RequestBody Role obj)
-            throws HandleBadRequestBody, HandleBadCondition, HandleNotModified {
+            throws HandleBadCondition, HandleNotModified, HandleBadRequestPath, HandleNotFoundExeption {
 
         if (obj == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -53,7 +53,7 @@ public class RoleController {
 
     @PutMapping
     public ResponseEntity updateObj(@RequestBody Role obj)
-            throws HandleBadRequestBody, HandleBadCondition, HandleNotModified {
+            throws HandleBadCondition, HandleNotModified {
 
         if (obj == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

@@ -7,6 +7,7 @@ import by.dvn.scooterrental.service.AbstractService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -40,7 +41,7 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity createObj(@RequestBody Order obj)
-            throws HandleBadRequestBody, HandleBadCondition, HandleNotModified {
+            throws HandleBadCondition, HandleNotModified, HandleBadRequestPath, HandleNotFoundExeption {
 
         if (obj == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -53,7 +54,7 @@ public class OrderController {
 
     @PutMapping
     public ResponseEntity updateObj(@RequestBody Order obj)
-            throws HandleBadRequestBody, HandleBadCondition, HandleNotModified {
+            throws HandleBadCondition, HandleNotModified {
 
         if (obj == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -64,6 +65,7 @@ public class OrderController {
         return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
     }
 
+    @Secured("ROLE_ADMIN")
     @DeleteMapping(value = "/{id}")
     public ResponseEntity deleteObj(@PathVariable(required = true, name = "id") Integer id)
             throws HandleBadRequestPath, HandleNotFoundExeption {

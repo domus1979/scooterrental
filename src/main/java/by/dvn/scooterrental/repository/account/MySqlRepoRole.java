@@ -2,6 +2,7 @@ package by.dvn.scooterrental.repository.account;
 
 import by.dvn.scooterrental.model.IModelObject;
 import by.dvn.scooterrental.model.account.Role;
+import by.dvn.scooterrental.model.account.User;
 import by.dvn.scooterrental.repository.AbstractMySqlRepo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,6 +30,7 @@ public class MySqlRepoRole extends AbstractMySqlRepo<Role> {
             Query query = session.createQuery("FROM Role WHERE id = :idParam");
             query.setParameter("idParam", id);
             List<Role> objectList = query.list();
+            session.clear();
             if (objectList.size() > 0) {
                 log4jLogger.info("Success read records in BD for Roles, with id: " +
                         id + ".");
@@ -47,7 +49,6 @@ public class MySqlRepoRole extends AbstractMySqlRepo<Role> {
         try {
             Query query = session.createQuery("FROM Role");
             List<Role> objectList = query.list();
-//            String s = objectList.toString();
             if (objectList.size() > 0) {
                 log4jLogger.info("Success read all records in BD for Role.");
                 return objectList;
@@ -57,5 +58,22 @@ public class MySqlRepoRole extends AbstractMySqlRepo<Role> {
         }
         return null;
     }
+
+    public Role findByName(String name) {
+        Session session = super.getSession();
+        try {
+            Query query = session.createQuery("FROM Role WHERE name = :nameParam");
+            query.setParameter("nameParam", name);
+            List<Role> role = query.list();
+            session.clear();
+            if (role.size() > 0) {
+                return role.get(0);
+            }
+        } catch (Exception e) {
+            log4jLogger.error("Can`t read records in BD for role name " + name + ". " + e.getMessage());
+        }
+        return null;
+    }
+
 
 }
