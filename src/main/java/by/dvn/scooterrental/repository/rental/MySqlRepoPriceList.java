@@ -29,6 +29,7 @@ public class MySqlRepoPriceList extends AbstractMySqlRepo<PriceList> {
             Query query = session.createQuery("FROM PriceList WHERE id = :idParam");
             query.setParameter("idParam", id);
             List<PriceList> objectList = query.list();
+            session.clear();
             if (objectList.size() > 0) {
                 log4jLogger.info("Success read records in BD for PriceList with id: " + id + ".");
                 return objectList.get(0);

@@ -2,16 +2,14 @@ package by.dvn.scooterrental.service.rental;
 
 import by.dvn.scooterrental.dto.IDtoObject;
 import by.dvn.scooterrental.dto.rental.DtoOrder;
+import by.dvn.scooterrental.dto.rental.DtoScooter;
 import by.dvn.scooterrental.handlerexception.*;
 import by.dvn.scooterrental.model.IModelObject;
-import by.dvn.scooterrental.model.rental.Order;
-import by.dvn.scooterrental.model.rental.OrderStatus;
-import by.dvn.scooterrental.model.rental.ScooterStatus;
-import by.dvn.scooterrental.model.rental.SeasonTicket;
+import by.dvn.scooterrental.model.rental.*;
 import by.dvn.scooterrental.repository.AbstractMySqlRepo;
 import by.dvn.scooterrental.repository.rental.MySqlRepoOrder;
-import by.dvn.scooterrental.repository.rental.MySqlRepoScooter;
 import by.dvn.scooterrental.service.AbstractService;
+import by.dvn.scooterrental.service.account.ServiceUser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
@@ -27,7 +25,14 @@ import java.util.stream.Collectors;
 @Service
 public class ServiceOrder extends AbstractService<Order> {
     private static final Logger log4jLogger = LogManager.getLogger(ServiceOrder.class.getName());
-    private MySqlRepoScooter repoScooter;
+
+    private ServiceScooter serviceScooter;
+
+    private ServiceRentalPoint serviceRentalPoint;
+
+    private ServicePriceList servicePriceList;
+
+    private ServiceUser serviceUser;
 
     public ServiceOrder(AbstractMySqlRepo<Order> mySqlRepo, ModelMapper modelMapper) {
         super(mySqlRepo, modelMapper);
@@ -38,13 +43,40 @@ public class ServiceOrder extends AbstractService<Order> {
         return (MySqlRepoOrder) super.getMySqlRepo();
     }
 
-    public MySqlRepoScooter getMySqlScooterRepo() {
-        return this.repoScooter;
+    public ServiceScooter getServiceScooter() {
+        return serviceScooter;
+    }
+
+    public ServiceRentalPoint getServiceRentalPoint() {
+        return serviceRentalPoint;
+    }
+
+    public ServicePriceList getServicePriceList() {
+        return servicePriceList;
+    }
+
+    public ServiceUser getServiceUser() {
+        return serviceUser;
     }
 
     @Autowired
-    public void setRepoScooter(MySqlRepoScooter repoScooter) {
-        this.repoScooter = repoScooter;
+    public void setServiceScooter(ServiceScooter serviceScooter) {
+        this.serviceScooter = serviceScooter;
+    }
+
+    @Autowired
+    public void setServiceRentalPoint(ServiceRentalPoint serviceRentalPoint) {
+        this.serviceRentalPoint = serviceRentalPoint;
+    }
+
+    @Autowired
+    public void setServicePriceList(ServicePriceList servicePriceList) {
+        this.servicePriceList = servicePriceList;
+    }
+
+    @Autowired
+    public void setServiceUser(ServiceUser serviceUser) {
+        this.serviceUser = serviceUser;
     }
 
     @Override
@@ -74,18 +106,25 @@ public class ServiceOrder extends AbstractService<Order> {
     }
 
     @Override
-    public boolean create(IModelObject order) throws HandleBadRequestBody, HandleBadCondition, HandleNotModified {
-        if (((Order) order).getScooter() != null &&
-                ((Order) order).getScooter().getScooterStatus() != ScooterStatus.AVAILABLE) {
-            log4jLogger.error("Scooter for rental not avalible.");
-            throw new HandleBadCondition("Scooter for rental not avalible..");
-        }
-        if (cheсkOrder(order)) {
+    public boolean create(IModelObject order)
+            throws HandleBadCondition, HandleBadRequestPath, HandleNotFoundExeption, HandleNotModified {
+
+        if (checkObject(order, false)) {
 
             order = setOrderDefaultParameters((Order) order);
 
+            if (!ScooterStatus.AVAILABLE
+                    .equals(((DtoScooter) getServiceScooter()
+                            .read(((Order) order)
+                                    .getScooter()
+                                    .getId()))
+                            .getScooterStatus())) {
+                log4jLogger.error("Scooter for rental not avalible.");
+                throw new HandleBadCondition("Scooter for rental not avalible..");
+            }
+
             ((Order) order).getScooter().setScooterStatus(ScooterStatus.RENTAL);
-            if (getMySqlScooterRepo().update(((Order) order).getScooter())) {
+            if (getServiceScooter().update(((Order) order).getScooter())) {
                 log4jLogger.info("Scooter status for scooter from order with id " +
                         order.getId() + " has change to rental.");
             } else {
@@ -101,14 +140,14 @@ public class ServiceOrder extends AbstractService<Order> {
     }
 
     @Override
-    public boolean update(IModelObject order) throws HandleBadRequestBody, HandleBadCondition, HandleNotModified {
-        if (cheсkOrder(order)) {
+    public boolean update(IModelObject order) throws HandleBadCondition, HandleNotModified {
+        if (checkObject(order, true)) {
 
             order = calculateOrder((Order) order);
 
             if (OrderStatus.CLOSE.equals(((Order) order).getOrderStatus())) {
                 ((Order) order).getScooter().setScooterStatus(ScooterStatus.AVAILABLE);
-                if (getMySqlScooterRepo().update(((Order) order).getScooter())) {
+                if (getServiceScooter().update(((Order) order).getScooter())) {
                     log4jLogger.info("Scooter status for scooter from order with id " +
                             order.getId() + " has change to avalible.");
                 } else {
@@ -123,33 +162,52 @@ public class ServiceOrder extends AbstractService<Order> {
         return false;
     }
 
-    private boolean cheсkOrder(IModelObject order) throws HandleBadRequestBody, HandleBadCondition {
-        if (!(order instanceof Order)) {
+    @Override
+    public boolean checkObject(IModelObject obj, boolean findById) throws HandleBadCondition {
+        if (obj == null) {
+            log4jLogger.error("Order is null.");
+            throw new HandleBadCondition("Order is null");
+        }
+        if (!(obj instanceof Order)) {
             log4jLogger.error("This is not Order object.");
-            throw new HandleBadRequestBody("You wont create order from another object.");
+            throw new HandleBadCondition("You wont create order from another object.");
+        }
+        if (findById && getMySqlRepo().read(obj.getId()) == null) {
+            log4jLogger.error("Order model with id: " + obj.getId() + " not found.");
+            throw new HandleBadCondition("Order model with id: " + obj.getId() + " not found.");
         }
 
-        if (!((Order) order).getStartRentalPoint().equals(((Order) order).getScooter().getRentalPoint())) {
+        if (!getServiceScooter().checkObject(((Order) obj).getScooter(), true) ||
+                !getServiceRentalPoint().checkObject(((Order) obj).getStartRentalPoint(), true) ||
+                !getServiceRentalPoint().checkObject(((Order) obj).getFinishRentalPoint(), true) ||
+                !getServiceUser().checkObject(((Order) obj).getUser(),true)) {
+            return false;
+        }
+
+        if (!((Order) obj).getStartRentalPoint().equals(((Order) obj).getScooter().getRentalPoint())) {
             log4jLogger.error("Scooter from order not contains in rental point from order.");
             throw new HandleBadCondition("Scooter from order not contains in rental point from order.");
         }
 
-        if (((Order) order).getPriceList() != null) {
-            if (!((Order) order).getPriceList().getPriceType().isSeasonTicket() &&
-                    !((Order) order).getPriceList().getScooterModel()
-                            .equals(((Order) order).getScooter().getScooterModel())) {
+        PriceList priceList = ((Order) obj).getPriceList();
+        if (priceList != null &&
+                getServicePriceList().checkObject(priceList, true)) {
+
+            if (!priceList.getPriceType().isSeasonTicket() &&
+                    !priceList.getScooterModel()
+                            .equals(((Order) obj).getScooter().getScooterModel())) {
                 log4jLogger.error("The price list from the order is not intended for the scooter model.");
                 throw new HandleBadCondition("The price list from the order is not intended for the scooter model.");
             }
-            if (((Order) order).getBeginTime().isAfter(((Order) order).getEndTime())) {
+            if (((Order) obj).getBeginTime().isAfter(((Order) obj).getEndTime())) {
                 log4jLogger.error("The begin date of order is after end date.");
                 throw new HandleBadCondition("The begin date of order is after end date.");
             }
-            if (((Order) order).getPriceList().getPriceType().isSeasonTicket()) {
+            if (priceList.getPriceType().isSeasonTicket()) {
                 //find season tickets
-                SeasonTicket seasonTicket = getMySqlRepo().findSeasonTicket((Order) order);
+                SeasonTicket seasonTicket = getMySqlRepo().findSeasonTicket((Order) obj);
 
-                LocalDateTime ticketTime = ((Order) order).getBeginTime();
+                LocalDateTime ticketTime = ((Order) obj).getBeginTime();
                 LocalDateTime seasonTicketBeginTime = seasonTicket.getStartDate().atStartOfDay();
                 LocalDateTime seasonTicketEndTime = seasonTicket
                         .getStartDate()
@@ -163,7 +221,6 @@ public class ServiceOrder extends AbstractService<Order> {
                 }
             }
         }
-
         return true;
     }
 

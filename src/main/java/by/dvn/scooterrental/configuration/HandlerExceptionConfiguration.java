@@ -39,4 +39,10 @@ public class HandlerExceptionConfiguration {
         return new ResponseEntity<ExceptionResponse>(exceptionResponse, HttpStatus.NOT_MODIFIED);
     }
 
+    @ExceptionHandler(HandleNotAuthorized.class)
+    public ResponseEntity<ExceptionResponse> notAuthorized(HandleNotAuthorized ex) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(ex.getMessage());
+        return new ResponseEntity<ExceptionResponse>(exceptionResponse, HttpStatus.UNAUTHORIZED);
+    }
+
 }

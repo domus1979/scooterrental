@@ -46,44 +46,6 @@ public abstract class AbstractMySqlRepo<T extends IModelObject> implements IRepo
         return false;
     }
 
-//    @Override
-//    public IModelObject read(Integer id, String tableName) {
-//        Session session = getSession();
-//        try {
-//            Query query = session.createQuery("FROM " + tableName + " WHERE id = :idParam");
-//            query.setParameter("idParam", id);
-//            List<T> objectList = query.list();
-//            if (objectList.size() > 0) {
-//                log4jLogger.info("Success read records in BD for table: " +
-//                        tableName + ", for id: " + id + ".");
-//                return objectList.get(0);
-//            }
-//        } catch (Exception e) {
-//            log4jLogger.error("Can`t read records in BD for table: " + tableName +
-//                    " with id: " + id + ". " + e.getMessage());
-//        }
-//        return null;
-//    }
-//
-//    @Override
-//    public List<T> readAll() {
-//        Session session = getSession();
-//        try {
-//            Query query = session.createQuery("FROM ");
-//            List<T> objectList = query.list();
-//            String s = objectList.toString();
-//            if (objectList.size() > 0) {
-//                log4jLogger.info("Success read all records in BD for table: " +
-//                        tableName + ".");
-//                return objectList;
-//            }
-//        } catch (Exception e) {
-//            log4jLogger.error("Can`t read any records in BD for table: " +
-//                    tableName + ". " + e.getMessage());
-//        }
-//        return null;
-//    }
-
     @Override
     public boolean update(IModelObject obj) {
         Session session = getSession();
@@ -92,6 +54,9 @@ public abstract class AbstractMySqlRepo<T extends IModelObject> implements IRepo
             log4jLogger.info("Success update records in BD for class: " +
                     obj.getClass().getName() + ", for id: " + obj.getId() + ".");
             return true;
+        } catch (Error error) {
+            log4jLogger.error("Can`t update records in BD for class: " + obj.getClass().getName() +
+                    " with id: " + obj.getId() + ". " + error.getMessage());
         } catch (Exception e) {
             log4jLogger.error("Can`t update records in BD for class: " + obj.getClass().getName() +
                     " with id: " + obj.getId() + ". " + e.getMessage());

@@ -3,6 +3,7 @@ package by.dvn.scooterrental.model.account;
 import by.dvn.scooterrental.model.IModelObject;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity

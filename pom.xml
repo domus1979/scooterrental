@@ -24,8 +24,11 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<mavenplugin.version>3.3.2</mavenplugin.version>
 		<threetenbp.version>1.6.0</threetenbp.version>
+		<jjwt.version>0.9.1</jjwt.version>
 		<log4j.version>2.17.1</log4j.version>
 		<mapper.version>3.1.0</mapper.version>
+		<sequritytest.version>5.7.0</sequritytest.version>
+		<junit.version>5.8.2</junit.version>
 	</properties>
 
 	<dependencies>
@@ -39,25 +42,30 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-		<!--
+		<!-- Tomcat support -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-tomcat</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		-->
+
 		<dependency>
 			<groupId>org.threeten</groupId>
 			<artifactId>threetenbp</artifactId>
 			<version>${threetenbp.version}</version>
 		</dependency>
 
-		<!-- Spring security
+		<!-- Spring security -->
 		<dependency>
-			<groupId>org.sprigframework.boot</groupId>
+			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
-		-->
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt</artifactId>
+			<version>${jjwt.version}</version>
+		</dependency>
+
 		<!-- SQL -->
 		<dependency>
 			<groupId>mysql</groupId>
@@ -89,14 +97,27 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.junit.vintage</groupId>
+					<artifactId>junit-vintage-engine</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
-		<!--
+		<!-- Security test -->
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-test</artifactId>
+			<version>${sequritytest.version}</version>
 			<scope>test</scope>
 		</dependency>
-		-->
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 
 	<build>

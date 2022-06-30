@@ -2,10 +2,13 @@ package by.dvn.scooterrental.service.rental;
 
 import by.dvn.scooterrental.dto.IDtoObject;
 import by.dvn.scooterrental.dto.rental.DtoPriceType;
+import by.dvn.scooterrental.handlerexception.HandleBadCondition;
 import by.dvn.scooterrental.handlerexception.HandleBadRequestPath;
 import by.dvn.scooterrental.handlerexception.HandleNotFoundExeption;
+import by.dvn.scooterrental.model.IModelObject;
 import by.dvn.scooterrental.model.rental.PriceType;
 import by.dvn.scooterrental.repository.AbstractMySqlRepo;
+import by.dvn.scooterrental.repository.rental.MySqlRepoPriceType;
 import by.dvn.scooterrental.service.AbstractService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,8 +27,8 @@ public class ServicePriceType extends AbstractService<PriceType> {
     }
 
     @Override
-    public AbstractMySqlRepo<PriceType> getMySqlRepo() {
-        return super.getMySqlRepo();
+    public MySqlRepoPriceType getMySqlRepo() {
+        return (MySqlRepoPriceType) super.getMySqlRepo();
     }
 
     @Override
@@ -54,4 +57,19 @@ public class ServicePriceType extends AbstractService<PriceType> {
         throw new HandleNotFoundExeption("Not found any price type.");
     }
 
+    public boolean checkObject(IModelObject obj, boolean findById) throws HandleBadCondition {
+        if (obj == null) {
+            log4jLogger.error("Price type is null.");
+            throw new HandleBadCondition("Price type is null.");
+        }
+        if (!(obj instanceof PriceType)) {
+            log4jLogger.error("This is not PriceType object.");
+            throw new HandleBadCondition("You wont to use price type from another object.");
+        }
+        if (findById && getMySqlRepo().read(obj.getId()) == null) {
+            log4jLogger.error("Price type with id: " + obj.getId() + " not found.");
+            throw new HandleBadCondition("Price type with id: " + obj.getId() + " not found.");
+        }
+        return true;
+    }
 }

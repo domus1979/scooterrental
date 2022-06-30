@@ -30,6 +30,7 @@ public class MySqlRepoOrder extends AbstractMySqlRepo<Order> {
             Query query = session.createQuery("FROM Order WHERE id = :idParam");
             query.setParameter("idParam", id);
             List<Order> objectList = query.list();
+            session.clear();
             if (objectList.size() > 0) {
                 log4jLogger.info("Success read records in BD for Order with id: " + id + ".");
                 return objectList.get(0);

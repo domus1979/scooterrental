@@ -7,7 +7,7 @@ import by.dvn.scooterrental.model.IModelObject;
 import java.util.List;
 
 public interface IService<T extends IModelObject, E extends IDtoObject> {
-    boolean create(T obj) throws HandleBadRequestPath, HandleBadRequestBody, HandleBadCondition, HandleNotModified;
+    boolean create(T obj) throws HandleBadRequestPath, HandleBadRequestBody, HandleBadCondition, HandleNotModified, HandleNotFoundExeption;
 
     E read(Integer id) throws HandleBadRequestPath, HandleNotFoundExeption;
 
@@ -17,4 +17,5 @@ public interface IService<T extends IModelObject, E extends IDtoObject> {
 
     boolean delete(Integer id) throws HandleBadRequestPath, HandleNotFoundExeption;
 
+    boolean checkObject(T obj, boolean findById) throws HandleBadCondition;
 }

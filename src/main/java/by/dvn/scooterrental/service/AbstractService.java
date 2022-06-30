@@ -12,7 +12,9 @@ import org.springframework.stereotype.Service;
 @Service
 public abstract class AbstractService<T extends IModelObject> implements IService {
     private static final Logger log4jLogger = LogManager.getLogger(AbstractService.class.getName());
+
     private AbstractMySqlRepo<T> mySqlRepo;
+
     private ModelMapper modelMapper;
 
     @Autowired
@@ -30,37 +32,28 @@ public abstract class AbstractService<T extends IModelObject> implements IServic
     }
 
     @Override
-    public boolean create(IModelObject obj) throws HandleBadRequestBody, HandleBadCondition, HandleNotModified {
-        if (obj != null) {
-            if (mySqlRepo.create(obj)) {
-                return true;
-            } else {
-                throw new HandleBadRequestBody("Not valid body object. Can`t create object.");
-            }
+    public boolean create(IModelObject obj)
+            throws HandleBadCondition, HandleBadRequestPath, HandleNotFoundExeption, HandleNotModified {
+
+
+        if (checkObject(obj, false)) {
+            return getMySqlRepo().create(obj);
         }
-        log4jLogger.error("No object to create.");
-        throw new HandleBadRequestBody("No object to create.");
-//        return false;
+        return false;
     }
 
     @Override
-    public boolean update(IModelObject obj) throws HandleBadRequestBody, HandleBadCondition, HandleNotModified {
-        if (obj != null) {
-            if (mySqlRepo.update(obj)) {
-                return true;
-            } else {
-                throw new HandleBadRequestBody("Not valid body object. Can`t update object.");
-            }
+    public boolean update(IModelObject obj) throws HandleBadCondition, HandleNotModified {
+        if (checkObject(obj, true)) {
+            return getMySqlRepo().update(obj);
         }
-        log4jLogger.error("No object to update.");
-        throw new HandleBadRequestBody("No object to create.");
-//        return false;
+        return false;
     }
 
     @Override
     public boolean delete(Integer id) throws HandleBadRequestPath, HandleNotFoundExeption {
         if (id != null && id > 0) {
-            if (mySqlRepo.delete(id)) {
+            if (getMySqlRepo().delete(id)) {
                 return true;
             } else {
                 throw new HandleNotFoundExeption("Not found object with id: " + id);
